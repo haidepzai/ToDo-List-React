@@ -12,14 +12,14 @@ function App() {
 
   //useEffect [] wird beim Rendern der Component einmal ausgeführt.
   //Async, weil fetchTasks ein Promise ist
-  useEffect(() => {  
+  useEffect(() => {
+    const getTasks = async () => {
+      const tasksFromServer = await fetchTasks();
+      setTasks(tasksFromServer);
+    };
+
     getTasks();
   }, []);
-
-  const getTasks = async () => {
-    const tasksFromServer = await fetchTasks();
-    setTasks(tasksFromServer);
-  };
 
   //Fetch Tasks (return a promise)
   const fetchTasks = async () => {
