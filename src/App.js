@@ -10,15 +10,16 @@ function App() {
   const [showAddTask, setShowAddTask] = useState(false);
   const [tasks, setTasks] = useState([]);
 
+  //useEffect [] wird beim Rendern der Component einmal ausgeführt.
   //Async, weil fetchTasks ein Promise ist
-  useEffect(() => {
-    const getTasks = async () => {
-      const tasksFromServer = await fetchTasks();
-      setTasks(tasksFromServer);
-    };
-
+  useEffect(() => {  
     getTasks();
   }, []);
+
+  const getTasks = async () => {
+    const tasksFromServer = await fetchTasks();
+    setTasks(tasksFromServer);
+  };
 
   //Fetch Tasks (return a promise)
   const fetchTasks = async () => {
@@ -71,7 +72,7 @@ function App() {
   //...task = spread (alle Properties, reminder wird geändert)
   const toggleReminder = async (id) => {
     const taskToToggle = await fetchTask(id);
-    const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
+    const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }; //Update DB
 
     const res = await fetch(`http://localhost:5000/tasks/${id}`, {
       method: "PUT",
@@ -83,7 +84,7 @@ function App() {
 
     const data = await res.json();
 
-    setTasks(
+    setTasks( //Update UI
       tasks.map((task) =>
         task.id === id ? { ...task, reminder: !task.reminder } : task
       )
@@ -104,15 +105,14 @@ function App() {
           render={(props) => (
             <>
               {showAddTask && <AddTask onAdd={addTask} />}
-              {tasks.length > 0 ? (
+              {tasks.length > 0 ? ( //App - Tasks - Task (Hierarchie)
                 <Tasks
                   tasks={tasks}
                   onDelete={deleteTask}
                   onToggle={toggleReminder}
                 />
-              ) : (
-                "No Tasks to Show"
-              )}
+              ) : ("No Tasks to Show")
+              }
             </>
           )}
         />
